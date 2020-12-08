@@ -674,12 +674,12 @@ class MiniGridEnv(gym.Env):
         self.observation_space = spaces.Box(
             low=0,
             high=255,
-            shape=(self.agent_view_size, self.agent_view_size, 3),
+            shape=(self.agent_view_size * self.agent_view_size * 3,),
             dtype='uint8'
         )
-        self.observation_space = spaces.Dict({
-            'image': self.observation_space
-        })
+        #self.observation_space = spaces.Dict({
+        #    'image': self.observation_space
+        #})
 
         # Range of possible rewards
         self.reward_range = (0, 1)
@@ -692,6 +692,7 @@ class MiniGridEnv(gym.Env):
         self.height = height
         self.max_steps = max_steps
         self.see_through_walls = see_through_walls
+        self._max_episode_steps = self.max_steps
 
         # Current position and direction of the agent
         self.agent_pos = None
@@ -1216,7 +1217,7 @@ class MiniGridEnv(gym.Env):
             'mission': self.mission
         }
 
-        return obs
+        return obs['image'].reshape(self.agent_view_size * self.agent_view_size * 3,)
 
     def get_obs_render(self, obs, tile_size=TILE_PIXELS//2):
         """
